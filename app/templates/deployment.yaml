@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ubi8-minimal
+  name: {{ .Values.nameMoreRestricted }}
+  namespace: {{ .Values.sccname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ubi8-minimal
+      deployment: ubi8-minimal
+  template:
+    metadata:
+      labels:
+        app: ubi8-minimal
+        deployment: ubi8-minimal
+    spec:
+      serviceAccount: {{ .Values.sccname }}
+      containers:
+      - args:
+        - /bin/sh
+        - -c
+        - while true; do sleep 120 && date; done
+        image: registry.access.redhat.com/ubi8-minimal
+        imagePullPolicy: Always
+        name: ubi8-minimal
+        resources: {}
+      restartPolicy: Always

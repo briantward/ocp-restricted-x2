@@ -1,0 +1,15 @@
+== Custom Restricted SecurityContextConstraint
+
+Install the SCC using helm in (any) specific namespace:
+
+ helm install myscc scc/
+
+Install the SCC using helm template without a namepace:
+
+ helm template scc/ | oc apply -f -
+
+Install a test application to use it:
+
+ oc login -u my-basic-user 
+ oc project <namespace>
+ helm install myapp app/
