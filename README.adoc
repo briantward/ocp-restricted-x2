@@ -1,15 +1,47 @@
 == Custom Restricted SecurityContextConstraint
 
-Install the SCC using helm in (any) specific namespace:
+This example creates a custom SecurityContextConstraint (SCC) and correlating ClusterRole that can be used to create a more restrictive SCC profile than the default `restricted` SCC that come with OpenShift.
 
- helm install myscc scc/
+However, in order to use this ClusterRole, you will need a RoleBinding in a specific namespace to a specific ServiceAccount.  This requires adminstrative privileges to assign.  Unfortunately at the moment there is no way for basic-users to selectively choose to use a more restrictive profile.  You can assign it as a default to basic-users but it then takes immediate precedence over the existing `restricted` profile.  The working alternative is to have an admin create a custom ServiceAccount with a RoleBinding to this ClusterRole.  I recommend doing this during your typical application onboarding process where you normally define ResourceQuotas, LimitRanges, and NetworkPolicies and other such admin controlled features.
 
-Install the SCC using helm template without a namepace:
+== As Admininistrator
 
- helm template scc/ | oc apply -f -
+Install the SCC using helm as a cluster-admin in (any) specific namespace:
 
-Install a test application to use it:
+ $ helm install myscc scc/
 
- oc login -u my-basic-user 
- oc project <namespace>
- helm install myapp app/
+Install the SCC using helm template as a cluster-admin without a namepace:
+
+ $ helm template scc/ | oc apply -f -
+
+As a cluster-admin, assign a basic-user as admin to the created namespace:
+
+ $ oc adm policy add-role-to-user admin my-basic-user -n restricted-acmecorp
+
+
+== As User
+
+Install a test application as a basic-user to use it:
+
+ $ oc login -u my-basic-user 
+ $ oc project restricted-acmecorp
+ $ helm install myapp app/
+
+Install a regular application using the standard `restricted` SCC with the default ServiceAccount.
+
+ $ helm install my-regular-app app-restricted/
+
+Verify each got the right SCC:
+
+----
+$ oc get pods -o yaml | grep -E "^    name:|scc"
+      openshift.io/scc: restricted
+    name: httpd-695b6c9dfc-b88kc
+      openshift.io/scc: restricted-acmecorp
+    name: more-restricted-app-7d755747d7-55jkm
+----
+
+Uninstall the apps.
+
+ $ helm uninstall my-regular-app
+ $ helm uninstall my-custom-app

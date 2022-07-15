@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: ubi8-minimal
-  name: {{ .Values.nameMoreRestricted }}
+  name: {{ .Values.appname }}
   namespace: {{ .Values.sccname }}
 spec:
   replicas: 1
