@@ -45,3 +45,10 @@ Uninstall the apps.
 
  $ helm uninstall my-regular-app
  $ helm uninstall my-custom-app
+
+== References
+
+- https://docs.openshift.com/container-platform/4.10/authentication/managing-security-context-constraints.html[Managing security context constraints]
+- https://docs.openshift.com/container-platform/4.10/security/seccomp-profiles.html[Configuring seccomp profiles]
+- https://kubernetes.io/docs/tutorials/security/seccomp/[Restrict a Container's Syscalls with seccomp]
+- https://cloud.redhat.com/blog/seccomp-for-fun-and-profit[Seccomp for Fun and Profit]
