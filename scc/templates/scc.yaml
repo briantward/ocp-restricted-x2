@@ -15,7 +15,8 @@ kind: SecurityContextConstraints
 metadata:
   annotations:
     kubernetes.io/description: {{ .Values.name }} includes all the features of restricted and 
-      removes allowPrivilegeEscalation, adds readOnlyRootFilesystem, drops all capabilities
+      removes allowPrivilegeEscalation, adds readOnlyRootFilesystem, drops all capabilities,
+      and uses the default seccomp profile
   name: {{ .Values.name }}
 priority: null
 readOnlyRootFilesystem: true
@@ -35,3 +36,5 @@ volumes:
 - persistentVolumeClaim
 - projected
 - secret
+seccompProfiles:
+- runtime/default
